@@ -1,18 +1,11 @@
 <?php
 
 use App\Controller\OrderController;
-use App\Database\Database;
 use App\DependencyInjection\LoggerCompilerPass;
-use App\Logger;
-use App\Mailer\GmailMailer;
-use App\Mailer\SmtpMailer;
-use App\Texter\FaxTexter;
-use App\Texter\SmsTexter;
-use App\Texter\TexterInterface;
-use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 require __DIR__ . '/vendor/autoload.php';
 /**
@@ -20,89 +13,18 @@ require __DIR__ . '/vendor/autoload.php';
  */
 $container = new ContainerBuilder();
 
-/**
- * For facilities to create of  our  definitions
- * we use parameters directly on our container
- * exemple with the definition mailer.gmail
- * to see line 61
- */
-$container->setParameter('mailer.gmail_user', 'issa@gmail.com');
-$container->setParameter('mailer.gmail_password', '123456');
 
-///////////////////////////////////////////
+// Loading of the setting services 
 
-/**
- * To explain at the container how do you create a object
- * we can add arguments and autowiring
- * Autowiring runs if container is compile
- * we can update constructor of our classes whithout to touch our definition or register
- */
-$container->register('database', Database::class)
-    ->setAutowired(true);
-/**
- * we can write another way more fast
- * exactly same thing
- */
-$container->autowire('database', Database::class);
+// $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/config'));
+// $loader->load('services.php');
 
-///////////////////////////////////////////
-
-$container->autowire('logger', Logger::class);
-
-$container->autowire('texter.sms', SmsTexter::class)
-    ->setArguments(['service.sms.com', 'apikey1234'])
-    ->addTag('with_logger');
-
-
-
-$container->autowire('texter.fax', FaxTexter::class);
-
-
-/////////////////////////////////////////
-
-$container->autowire('mailer.gmail', GmailMailer::class)
-    ->setArguments(["%mailer.gmail_user%", "%mailer.gmail_password%"])
-    ->addTag('with_logger');
-
-
-
-
-$container->autowire('mailer.smtp', SmtpMailer::class)
-    ->setArguments(['smtp://localhost', 'root', '123']);
-
-//////////////////////////////////////////
-
-
-$container->autowire('order_controller', OrderController::class)
-    ->addMethodCall('sayHello', ['Bonjour à tous']);
-
-
-/////////////////////////////////////////////////
-
-/**
- * To give aliases
- * we can use class name when aliases to create Amazing !
- */
-
-$container->setAlias('App\Controller\OrderController', 'order_controller')->setPublic(true);
-
-$container->setAlias('App\Database\Database', 'database');
-
-$container->setAlias('App\Logger', 'logger');
-
-$container->setAlias('App\Mailer\GmailMailer', 'mailer.gmail');
-$container->setAlias('App\Mailer\SmtpMailer', 'mailer.gmail');
-$container->setAlias('App\Mailer\MailerInterface', 'mailer.gmail');
-
-$container->setAlias('App\Texter\SmsTexter', 'texter.sms');
-$container->setAlias('App\Texter\FaxTexter', 'texter.sms');
-$container->setAlias('App\Texter\TexterInterface', 'texter.sms');
-
-///////////////////////////////////////////////
+$loader = new YamlFileLoader($container, new FileLocator([__DIR__ . '/config']));
+$loader->load('services.yaml');
 
 /**
  * Before to call compile we add compilerpass
- * to use
+ * 
  */
 
 $container->addCompilerPass(new LoggerCompilerPass);
@@ -122,9 +44,6 @@ $container->addCompilerPass(new LoggerCompilerPass);
 $container->compile();
 
 $controller = $container->get(OrderController::class);
-
-
-/////////////////////////////////////////////////
 
 
 

@@ -1,0 +1,53 @@
+parameters:
+  mailer.gmail_user: 'issa@gmail.com'
+  mailer.gmail_password: '123456'
+
+services:
+  _defaults:
+    autowire: true
+
+  order_controller:
+    class: App\Controller\OrderController
+    public: true
+    calls:
+      - method: sayHello
+        arguments: ['Bonjour à tous']
+  
+  database:
+    class: App\Database\Database
+  
+  logger:
+    class: App\Logger
+
+  texter.sms:
+    class: App\Texter\SmsTexter
+    arguments: ['service.sms.com', 'apikey1234']
+    tags: ['with_logger']
+  
+  texter.fax:
+    class: App\Texter\FaxTexter
+
+  mailer.gmail:
+    class: App\Mailer\GmailMailer
+    arguments: ["%mailer.gmail_user%", "%mailer.gmail_password%"]
+    tags: ['with_logger']
+
+  mailer.smtp:
+    class: App\Mailer\SmtpMailer
+    arguments: ['smtp://localhost', 'root', '123']
+
+  App\Controller\OrderController:
+    alias: order_controller
+    public: true
+  App\Database\Database: '@database'
+  App\Logger: '@logger'
+  App\Mailer\GmailMailer: '@mailer.gmail'
+  App\Mailer\SmtpMailer: '@mailer.gmail'
+  App\Mailer\MailerInterface: '@mailer.gmail'
+  App\Texter\SmsTexter: '@texter.sms'
+  App\Texter\FaxTexter: '@texter.sms'
+  App\Texter\TexterInterface: '@texter.sms'
+
+
+  
+ 
