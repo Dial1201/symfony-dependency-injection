@@ -24,6 +24,8 @@ return function (ContainerConfigurator $configurator) {
     $services->defaults()
         ->autowire(true);
 
+    $services->instanceof(HasLoggerInterface::class)->tag('with_logger');
+
     $services
         ->set('order_controller', OrderController::class)
         ->call('sayHello', ['Bonjour à tous'])
@@ -34,13 +36,13 @@ return function (ContainerConfigurator $configurator) {
 
         ->set('texter.sms', SmsTexter::class)
         ->args(['service.sms.com', 'apikey1234'])
-        ->tag('with_logger')
+        
 
         ->set('texter.fax', FaxTexter::class)
 
         ->set('mailer.gmail', GmailMailer::class)
         ->args(["%mailer.gmail_user%", "%mailer.gmail_password%"])
-        ->tag('with_logger')
+        
 
         ->set('mailer.smtp', SmtpMailer::class)
 

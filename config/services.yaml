@@ -6,6 +6,11 @@ services:
   _defaults:
     autowire: true
 
+  _instanceof:
+    App\HasLoggerInterface:
+      tags: ['with_logger']
+
+
   order_controller:
     class: App\Controller\OrderController
     public: true
@@ -22,7 +27,8 @@ services:
   texter.sms:
     class: App\Texter\SmsTexter
     arguments: ['service.sms.com', 'apikey1234']
-    tags: ['with_logger']
+    
+    
   
   texter.fax:
     class: App\Texter\FaxTexter
@@ -30,7 +36,8 @@ services:
   mailer.gmail:
     class: App\Mailer\GmailMailer
     arguments: ["%mailer.gmail_user%", "%mailer.gmail_password%"]
-    tags: ['with_logger']
+    
+    
 
   mailer.smtp:
     class: App\Mailer\SmtpMailer
