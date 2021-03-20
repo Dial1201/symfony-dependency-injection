@@ -4,41 +4,41 @@ parameters:
   firstName: "Issa"
 
 services:
+  _instanceof:
+    App\HasLoggerInterface:
+      tags: ['with_logger']
+
   _defaults:
     autowire: true
     autoconfigure: true
     bind:
       $firstName: "%firstName%"
 
-  _instanceof:
-    App\HasLoggerInterface:
-      tags: ['with_logger']
+  App\:
+    resource: '../src/*'
+    exclude: '../src/{Dependencyinjection}'
 
-
-  order_controller:
-    class: App\Controller\OrderController
+  App\Controller\OrderController:
     public: true
     calls:
       - method: sayHello
         arguments: ['Bonjour à tous']
-    
-  
-  texter.sms:
-    class: App\Texter\SmsTexter
+
+  App\Mailer\MailerInterface:
+    alias: App\Mailer\GmailMailer
+
+  App\Texter\TexterInterface:
+    alias: App\Texter\SmsTexter
+
+  App\Mailer\GmailMailer:
+    arguments:
+      - '%mailer.gmail_user%'
+      - '%mailer.gmail_password%'
+
+  App\Texter\SmsTexter:
     arguments: ['service.sms.com', 'apikey1234']
-
-  App\Controller\OrderController:
-    alias: order_controller
-    public: true
-  App\Database\Database: '@database'
-  App\Logger: '@logger'
-  App\Mailer\GmailMailer: '@mailer.gmail'
-  App\Mailer\SmtpMailer: '@mailer.gmail'
-  App\Mailer\MailerInterface: '@mailer.gmail'
-  App\Texter\SmsTexter: '@texter.sms'
-  App\Texter\FaxTexter: '@texter.sms'
-  App\Texter\TexterInterface: '@texter.sms'
-
+  
+  
 
   
  
