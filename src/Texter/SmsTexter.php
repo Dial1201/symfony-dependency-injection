@@ -11,8 +11,9 @@ class SmsTexter implements TexterInterface, HasLoggerInterface
     protected $key;
     protected $logger;
 
-    public function __construct(string $serviceDsn, string $key)
+    public function __construct(string $serviceDsn, string $key, string $firstName)
     {
+        var_dump("Ca marche dans les sms :$firstName");
         $this->serviceDsn = $serviceDsn;
         $this->key = $key;
     }

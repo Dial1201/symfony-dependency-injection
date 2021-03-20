@@ -15,8 +15,13 @@ class OrderController
     protected $mailer;
     protected $database;
 
-    public function __construct(Database $database, MailerInterface $mailer, TexterInterface $texter)
-    {
+
+    public function __construct(
+        Database $database,
+        MailerInterface $mailer,
+        TexterInterface $texter,
+        string $firstName
+    ) {
         $this->database = $database;
         $this->mailer = $mailer;
         $this->texter = $texter;
