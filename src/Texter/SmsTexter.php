@@ -20,6 +20,7 @@ class SmsTexter implements TexterInterface, HasLoggerInterface
     public function setLogger(Logger $logger)
     {
         $this->logger = $logger;
+        $this->logger->log("Ca marche dans les SMS");
     }
 
     public function send(Text $text)

@@ -22,7 +22,8 @@ return function (ContainerConfigurator $configurator) {
     $services = $configurator->services();
 
     $services->defaults()
-        ->autowire(true);
+        ->autowire(true)
+        ->autoconfigure(true);
 
     $services->instanceof(HasLoggerInterface::class)->tag('with_logger');
 

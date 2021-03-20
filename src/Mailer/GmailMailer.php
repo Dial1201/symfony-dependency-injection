@@ -21,6 +21,7 @@ class GmailMailer implements MailerInterface, HasLoggerInterface
     public function setLogger(Logger $logger)
     {
         $this->logger = $logger;
+        $this->logger->log("Ca marche dans les Gmail");
     }
 
     public function send(Email $email)
